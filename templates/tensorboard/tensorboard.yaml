@@ -3,16 +3,16 @@
 apiVersion: v1
 kind: Pod
 metadata:
-  generateName: {{ app }}-tensorboard-
+  generateName: {{{ app }}}-tensorboard-
   labels:
     target: "tensorboard"
-    app: "{{ app }}"
+    app: "{{{ app }}}"
 spec:
-  serviceAccountName: {{ service_account }}
+  serviceAccountName: {{{ service_account }}}
   restartPolicy: "Never"
   containers:
   - name: tensorboard
-    command: ["tensorboard", "--logdir=${ {{ logdir }} }", "--samples_per_plugin=images=999999,text=999999", "--max_reload_threads=4",  "serve"]
+    command: ["tensorboard", "--logdir=${ {{{ logdir }}} }", "--samples_per_plugin=images=999999,text=999999", "--max_reload_threads=4",  "serve"]
     image: "${IMAGE_NAME}"
     imagePullPolicy: "Always"
     resources:
