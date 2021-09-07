@@ -5,11 +5,11 @@
 exec julia --color=yes --startup-file=no -q --compile=min -O0 "${BASH_SOURCE[0]}" "$@"
 =#
 
-using Preferences, K8sUtilities
+using K8sUtilities
 
-LOCAL_PORT = {{local_port}}
-LABELS = `-l app={{app}},target=tensorboard`
-NAMESPACE = "{{ namespace }}"
+LOCAL_PORT = {{{local_port}}}
+LABELS = `-l app={{{app}}},target=tensorboard`
+NAMESPACE = "{{{ namespace }}}"
 
 tensorboard_pods = get_pod_names(LABELS; namespace=NAMESPACE)
 
@@ -48,8 +48,8 @@ if !isempty(tensorboard_pods)
 end
 
 # Use `ENV` variables for `envsubst` later on.
-ENV["IMAGE_NAME"] = IMAGE_NAME = "{{ ecr }}:{{ app }}-tensorboard"
-ENV["LOGDIR"] = "{{ logdir }} "
+ENV["IMAGE_NAME"] = IMAGE_NAME = "{{{ ecr }}}:{{{ app }}}-tensorboard"
+ENV["LOGDIR"] = "{{{ logdir }}}"
 
 println("Building dockerfile...")
 run(`docker build . --file tensorboard.dockerfile -t $IMAGE_NAME`)
