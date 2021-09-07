@@ -6,7 +6,10 @@ Uses Preferences.jl to set or retrieve the default ECR.
 """
 default_ecr
 
-default_ecr() = @something(@load_preference("ecr"), throw(ArgumentError("No `ecr` specified and no default has been set (see `default_ecr`)")))
+function default_ecr()
+    @something(@load_preference("ecr"),
+               throw(ArgumentError("No `ecr` specified and no default has been set (see `default_ecr`)")))
+end
 
 function default_ecr(ecr::AbstractString)
     ecr = convert(String, ecr)
@@ -23,7 +26,10 @@ Uses Preferences.jl to set or retrieve the default service account.
 """
 default_service_account
 
-default_service_account() = @something(@load_preference("service_account"), throw(ArgumentError("No `service_account` specified and no default has been set (see `default_service_account`)")))
+function default_service_account()
+    @something(@load_preference("service_account"),
+               throw(ArgumentError("No `service_account` specified and no default has been set (see `default_service_account`)")))
+end
 
 function default_service_account(service_account::AbstractString)
     service_account = convert(String, service_account)

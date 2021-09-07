@@ -11,7 +11,6 @@ function gen_file(file, text::AbstractString)
     return write(file, text)
 end
 
-
 """
     setup_tensorboard(destination::AbstractString; app::AbstractString,
                       logdir::AbstractString,
@@ -37,18 +36,17 @@ does not have to exist ahead of time.
 
 """
 function setup_tensorboard(destination::AbstractString; app::AbstractString,
-                           logdir::AbstractString,
-                           ecr::AbstractString = default_ecr(),
-                           service_account::AbstractString = default_service_account(),
-                           namespace::AbstractString = get_current_namespace(),
+                           logdir::AbstractString, ecr::AbstractString=default_ecr(),
+                           service_account::AbstractString=default_service_account(),
+                           namespace::AbstractString=get_current_namespace(),
                            local_port::Int=6006, overwrite=false)
-
     isfile(destination) && throw(ArgumentError("""
             Destination $destination exists and is a file.
             Must be a directory (or nonexistent in which case a directory will be created).
         """))
 
-    variables = Dict("app" => app, "logdir" => logdir, "ecr" => ecr, "service_account" => service_account, "local_port" => local_port,
+    variables = Dict("app" => app, "logdir" => logdir, "ecr" => ecr,
+                     "service_account" => service_account, "local_port" => local_port,
                      "namespace" => namespace)
 
     template_dir = joinpath(TEMPLATES, "tensorboard")
@@ -68,7 +66,8 @@ function setup_tensorboard(destination::AbstractString; app::AbstractString,
     return nothing
 end
 
-tensorboard_instructions() = """
+function tensorboard_instructions()
+    return """
 After calling `setup_tensorboard(destination; kwargs...)` to setup the configuration scripts in a destination directory:
 
 1. Run `chmod +x destination/tensorboard.sh` to make the script executable.
@@ -82,3 +81,4 @@ Note:
 * You can edit these files freely; running `setup_tensorboard` with `overwrite=true` will replace them with the latest defaults.
 * We suggest you set your syntax highlighting for `tensorboard.sh` to `julia`, as it is a Julia script disguised as a shell script.
 """
+end
