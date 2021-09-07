@@ -13,11 +13,18 @@ NAMESPACE = "{{{ namespace }}}"
 
 tensorboard_pods = get_pod_names(LABELS; namespace=NAMESPACE)
 
+go = (pod) -> begin
+    wait_until_pod_ready(pod; namespace=NAMESPACE)
+    port_forward(pod; remote_port=6006, local_port=LOCAL_PORT, namespace=NAMESPACE)
+    println("Following logs on pod...")
+    watch_logs(pod; exit_on_interrupt=true, namespace=NAMESPACE)
+end
+
 if length(tensorboard_pods) == 1
     pod = "pod/"*tensorboard_pods[1]
     result = Base.prompt("Existing pod $pod found. Port-forward to it?"; default="yes")
     if lowercase(result) in ("yes", "y")
-        port_forward_and_log(pod; remote_port=6006, local_port=LOCAL_PORT, namespace=NAMESPACE)
+        go(pod)
         exit(0)
     end
 end
@@ -30,11 +37,11 @@ if !isempty(tensorboard_pods)
 
     Kill them with
     ```
-    kubectl delete pods $(LABELS)
+    kubectl delete pods $(string(LABELS))
     ```
     and see which pods they are with
     ```
-    kubectl get pods $(LABELS)
+    kubectl get pods $(string(LABELS))
     ```
 
     If you want to setup port-forwarding to an existing pod, run
@@ -61,8 +68,4 @@ output = readchomp(pipeline("$(@__DIR__)/tensorboard.yaml", `envsubst`, `$(kubec
 println(output)
 pod = split(output)[1]
 
-
-wait_until_pod_ready(pod; namespace=NAMESPACE)
-port_forward(pod; remote_port=6006, local_port=LOCAL_PORT, namespace=NAMESPACE)
-println("Following logs on pod...")
-watch_logs(pod; exit_on_interrupt=true, namespace=NAMESPACE)
+go(pod)
