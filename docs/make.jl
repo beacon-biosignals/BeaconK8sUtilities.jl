@@ -5,11 +5,11 @@ DocMeta.setdocmeta!(K8sUtilities, :DocTestSetup, :(using K8sUtilities); recursiv
 
 makedocs(;
     modules=[K8sUtilities],
-    repo="https://github.com/ericphanson/K8sUtilities.jl/blob/{commit}{path}#{line}",
+    repo="https://github.com/beacon-biosignals/K8sUtilities.jl/blob/{commit}{path}#{line}",
     sitename="K8sUtilities.jl",
     format=Documenter.HTML(;
         prettyurls=get(ENV, "CI", "false") == "true",
-        canonical="https://ericphanson.github.io/K8sUtilities.jl",
+        canonical="https://beacon-biosignals.github.io/K8sUtilities.jl",
         assets=String[],
         ansicolor=true,
     ),
@@ -22,5 +22,5 @@ makedocs(;
 )
 
 deploydocs(;
-    repo="github.com/ericphanson/K8sUtilities.jl",
+    repo="github.com/beacon-biosignals/K8sUtilities.jl",
 )
