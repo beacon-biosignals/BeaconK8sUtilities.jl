@@ -57,7 +57,7 @@ run(`docker build $(@__DIR__) --file $(@__DIR__)/tensorboard.dockerfile -t $IMAG
 println("Pushing dockerfile...")
 run(`docker push $IMAGE_NAME`)
 
-output = readchomp(pipeline("(@__DIR__)/tensorboard.yaml", `envsubst`, `$(kubectl()) create -f -`))
+output = readchomp(pipeline("$(@__DIR__)/tensorboard.yaml", `envsubst`, `$(kubectl()) create -f -`))
 println(output)
 pod = split(output)[1]
 
