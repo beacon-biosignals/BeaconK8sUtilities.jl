@@ -12,7 +12,7 @@ spec:
   restartPolicy: "Never"
   containers:
   - name: tensorboard
-    command: ["tensorboard", "--logdir=${ {{{ logdir }}} }", "--samples_per_plugin=images=999999,text=999999", "--max_reload_threads=4",  "serve"]
+    command: ["tensorboard", "--logdir=${LOGDIR}", "--samples_per_plugin=images=999999,text=999999", "--max_reload_threads=4",  "serve"]
     image: "${IMAGE_NAME}"
     imagePullPolicy: "Always"
     resources:
