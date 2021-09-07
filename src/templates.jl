@@ -12,18 +12,44 @@ function gen_file(file, text::AbstractString)
 end
 
 
+"""
+    setup_tensorboard(destination::AbstractString; app::AbstractString,
+                      logdir::AbstractString,
+                      ecr::AbstractString = default_ecr(),
+                      service_account::AbstractString = default_service_account(),
+                      namespace::AbstractString = get_current_namespace(),
+                      local_port::Int=6006, overwrite=false)
+
+Sets up a tensorboard launch scripts in destination directory `destination`, which
+does not have to exist ahead of time.
+
+* `app`: name of project/application/model that you are using tensorboard with
+  (used for labelling the pods and keeping track of which is which)
+* `logdir`: log directory that tensorboard should be pointing at. May be an `s3` URI
+* `ecr`: name of the ECR repo to use to push docker images to. Can set this as a default
+  with [`default_ecr`](@ref).
+* `service_account`: name of the Kubernetes service account. Can set this as a default
+  with [`default_service_account`](@ref).
+* `namespace`: name of the Kubernetes namespace to use. Defaults to the current active
+  one introspected by [`get_current_namespace`](@ref).
+* `local_port`: local port to use when port forwarding.
+* `overwrite`: whether or not to overwrite existing configuration scripts.
+
+"""
 function setup_tensorboard(destination::AbstractString; app::AbstractString,
-    logdir::AbstractString,
-    ecr::AbstractString = default_ecr(),
-    service_account::AbstractString = default_service_account(),
-    local_port::Int=6006, overwrite=false)
+                           logdir::AbstractString,
+                           ecr::AbstractString = default_ecr(),
+                           service_account::AbstractString = default_service_account(),
+                           namespace::AbstractString = get_current_namespace(),
+                           local_port::Int=6006, overwrite=false)
 
     isfile(destination) && throw(ArgumentError("""
             Destination $destination exists and is a file.
             Must be a directory (or nonexistent in which case a directory will be created).
         """))
 
-    variables = Dict("app" => app, "logdir" => logdir, "ecr" => ecr, "service_account" => service_account, "local_port" => local_port)
+    variables = Dict("app" => app, "logdir" => logdir, "ecr" => ecr, "service_account" => service_account, "local_port" => local_port,
+                     "namespace" => namespace)
 
     template_dir = joinpath(TEMPLATES, "tensorboard")
 

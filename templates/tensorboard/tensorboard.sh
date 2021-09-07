@@ -9,14 +9,15 @@ using Preferences, K8sUtilities
 
 LOCAL_PORT = {{local_port}}
 LABELS = `-l app={{app}},target=tensorboard`
+NAMESPACE = "{{ namespace }}"
 
-tensorboard_pods = get_pod_names(LABELS)
+tensorboard_pods = get_pod_names(LABELS; namespace=NAMESPACE)
 
 if length(tensorboard_pods) == 1
     pod = "pod/"*tensorboard_pods[1]
     result = Base.prompt("Existing pod $pod found. Port-forward to it?"; default="yes")
     if lowercase(result) in ("yes", "y")
-        port_forward_and_log(pod; remote_port=6006, local_port=LOCAL_PORT)
+        port_forward_and_log(pod; remote_port=6006, local_port=LOCAL_PORT, namespace=NAMESPACE)
         exit(0)
     end
 end
@@ -46,8 +47,9 @@ if !isempty(tensorboard_pods)
     """)
 end
 
+# Use `ENV` variables for `envsubst` later on.
 ENV["IMAGE_NAME"] = IMAGE_NAME = "{{ ecr }}:{{ app }}-tensorboard"
-ENV["LOGDIR"]= "{{ logdir }} "
+ENV["LOGDIR"] = "{{ logdir }} "
 
 println("Building dockerfile...")
 run(`docker build . --file tensorboard.dockerfile -t $IMAGE_NAME`)
@@ -55,8 +57,12 @@ run(`docker build . --file tensorboard.dockerfile -t $IMAGE_NAME`)
 println("Pushing dockerfile...")
 run(`docker push $IMAGE_NAME`)
 
-output = readchomp(pipeline("cluster-tensorboard.yaml", `envsubst`, `kubectl create -f -`))
+output = readchomp(pipeline("tensorboard.yaml", `envsubst`, `kubectl create -f -`))
 println(output)
 pod = split(output)[1]
 
-port_forward_and_log(pod; remote_port=6006, local_port=LOCAL_PORT)
+
+wait_until_pod_ready(pod; namespace=NAMESPACE)
+port_forward(pod; remote_port=6006, local_port=LOCAL_PORT, namespace=NAMESPACE)
+println("Following logs on pod...")
+watch_logs(pod; exit_on_interrupt=true, namespace=NAMESPACE)
