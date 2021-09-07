@@ -24,4 +24,5 @@ makedocs(;
 deploydocs(;
     repo="github.com/beacon-biosignals/K8sUtilities.jl",
     push_preview=true,
+    devbranch = "main",
 )
