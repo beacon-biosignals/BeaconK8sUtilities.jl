@@ -2,7 +2,7 @@
 # This can be launched as a bash script-- it will `exec` into a Julia process and run the script.
 # It can also just be run or included as a Julia script.
 #=
-exec julia --color=yes --project=@K8sUtilities --startup-file=no -q --compile=min -O0 "${BASH_SOURCE[0]}" "$@"
+exec julia --color=yes --startup-file=no -q --compile=min -O0 "${BASH_SOURCE[0]}" "$@"
 =#
 
 using Preferences, K8sUtilities

@@ -5,7 +5,6 @@ using Preferences
 using Mustache
 using RelocatableFolders
 using Compat
-using Pkg, TOML
 
 const TEMPLATES = @path joinpath(@__DIR__, "..", "templates")
 

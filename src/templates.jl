@@ -46,7 +46,7 @@ tensorboard_instructions() = """
 After calling `setup_tensorboard(destination; kwargs...)` to setup the configuration scripts in a destination directory:
 
 1. Run `chmod +x destination/tensorboard.sh` to make the script executable.
-2. Run `K8sUtilities.configure_pkg_environment()` to setup a shared `@K8sUtilities` environment to use from the script.
+2. Make sure to add `K8sUtilities` to your global Julia environment so that it can be used from the `tensorboard.sh` script.
 
 Then running `destination/tensorboard.sh` in a shell should launch a tensorboard pod,
 or give you the option to connect to an existing one.
@@ -56,25 +56,3 @@ Note:
 * You can edit these files freely; running `setup_tensorboard` with `overwrite=true` will replace them with the latest defaults.
 * We suggest you set your syntax highlighting for `tensorboard.sh` to `julia`, as it is a Julia script disguised as a shell script.
 """
-
-"""
-    configure_pkg_environment(; io=devnull) -> Nothing
-
-Sets up the shared `@K8sUtilities` environment to use from scripts
-like `tensorboard.sh`.
-"""
-function configure_pkg_environment(; io=devnull)
-    current_project = Base.active_project()
-    try
-        # `io=devnull` here suppresses the `Activating environment at...` message.
-        Pkg.activate("K8sUtilities"; io, shared=true)
-        Pkg.add(; path=joinpath(@__DIR__, ".."), io)
-    finally # make sure we switch back
-        Pkg.activate(current_project; io)
-    end
-    return nothing
-end
-
-function package_version()
-    return TOML.parse(read(joinpath(@__DIR__, "..", "Project.toml"), String))["version"]
-end
