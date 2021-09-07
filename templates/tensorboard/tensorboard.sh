@@ -52,12 +52,12 @@ ENV["IMAGE_NAME"] = IMAGE_NAME = "{{{ ecr }}}:{{{ app }}}-tensorboard"
 ENV["LOGDIR"] = "{{{ logdir }}}"
 
 println("Building dockerfile...")
-run(`docker build . --file tensorboard.dockerfile -t $IMAGE_NAME`)
+run(`docker build $(@__DIR__) --file $(@__DIR__)/tensorboard.dockerfile -t $IMAGE_NAME`)
 
 println("Pushing dockerfile...")
 run(`docker push $IMAGE_NAME`)
 
-output = readchomp(pipeline("tensorboard.yaml", `envsubst`, `kubectl create -f -`))
+output = readchomp(pipeline("(@__DIR__)/tensorboard.yaml", `envsubst`, `$(kubectl()) create -f -`))
 println(output)
 pod = split(output)[1]
 
