@@ -1,3 +1,6 @@
 [deps]
 Documenter = "e30172f5-a6a5-5a46-863b-614d45cd2de4"
 K8sUtilities = "648fc1c5-a67a-4ffa-9999-af3b96bb6918"
+
+[compat]
+Documenteer = "0.27"
