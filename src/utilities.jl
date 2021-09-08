@@ -113,9 +113,8 @@ upon `ctrl-c`. Otherwise throws an error as usual upon interruption.
 function watch_logs(pod; exit_on_interrupt=false, namespace=nothing)
     pod = prefix_pod(pod)
     ns = isnothing(namespace) ? `` : `--namespace=$namespace`
-    runner(; interrupt_msg="while following the logs of $pod", exit_on_interrupt) do
-        return run(`$(kubectl()) logs $ns -f $pod`)
-    end
+    cmd_runner(`$(kubectl()) logs $ns -f $pod`; exit_on_interrupt,
+               interrupt_msg="while following the logs of $pod")
     return nothing
 end
 
@@ -124,12 +123,26 @@ struct Interrupted <: Exception
 end
 Base.showerror(io::IO, e::Interrupted) = print(io, "Interrupted ", e.msg)
 
-function runner(f; exit_on_interrupt=false, interrupt_msg="Interrupted")
+function cmd_runner(cmd::Cmd; exit_on_interrupt=false, interrupt_msg="Interrupted")
+    # We use `wait=false` and `wait_kill_result=true`
+    # So that if we ctrl-c we don't get
+    # a LoadError (failed process) but rather
+    # a usual InterruptException that we can handle.
+    runner(() -> run(pipeline(cmd; stdout, stderr); wait=false); exit_on_interrupt,
+           interrupt_msg, wait_kill_result=true)
+    return nothing
+end
+
+function runner(f; exit_on_interrupt=false, interrupt_msg="Interrupted",
+                wait_kill_result=false)
+    local task
     try
         # Makes interrupts catchable like in the REPL, even if run from a script.
         Base.exit_on_sigint(false)
-        f()
+        task = f()
+        wait_kill_result && wait(task)
     catch e
+        wait_kill_result && kill(task)
         if e isa InterruptException
             if exit_on_interrupt
                 # No need for a stacktrace
