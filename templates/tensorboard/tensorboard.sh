@@ -12,7 +12,7 @@ exec julia --color=yes --startup-file=no -q --compile=min -O0 "${BASH_SOURCE[0]}
 
 using K8sUtilities
 
-LOCAL_PORT = {{{local_port}}}
+LOCAL_PORT = get(ENV, "TENSORBOARD_LOCAL_PORT", {{{local_port}}})
 LABELS = `-l app={{{app}}},target=tensorboard`
 NAMESPACE = "{{{ namespace }}}"
 
