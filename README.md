@@ -17,9 +17,10 @@ julia> setup_follow("scripts")
 
 Then we can run `./scripts/follow.sh pod_name` from our shell and get
 a progress bar as we wait for the pod to startup, and then the logs streamed
-once it is ready.
+once it is ready. (This is just like `kubectl logs -f pod_name` except that
+we don't have to wait for the pod to be ready first).
 
 This could be adapted into a whole "launch script" including building a docker image,
 pushing it to an ECR, launching a pod, and then following along.
-
-This is facilitated by the Julia-side utilities provided in K8sUtilites.jl.
+Such a script can be facilitated by the Julia-side utilities and preferences
+provided in K8sUtilites.jl; see the [documentation](https://beacon-biosignals.github.io/K8sUtilities.jl/dev) for more.
