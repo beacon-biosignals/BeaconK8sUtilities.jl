@@ -11,6 +11,8 @@ exec julia --color=yes --startup-file=no -q --compile=min -O0 "${BASH_SOURCE[0]}
 =#
 
 using K8sUtilities
+using REPL
+using REPL.TerminalMenus
 
 LOCAL_PORT = get(ENV, "TENSORBOARD_LOCAL_PORT", {{{local_port}}})
 LABELS = `-l app={{{app}}},target=tensorboard`
@@ -33,10 +35,10 @@ if !isempty(tensorboard_pods)
 
     # `request` displays the menu and returns the index after the
     #   user has selected a choice
-    choice = request("Port-foward to existing pod?", menu)
+    choice = request("Port-foward to existing pod? Press `q` to proceed to launch a new pod instead or `ctrl-c` to exit.", menu)
 
     if choice != -1
-        go(tensorboard_pods[choice])
+        go("pod/"*tensorboard_pods[choice])
         exit(0)
     else
         println("Proceeding to launch new pod.")
