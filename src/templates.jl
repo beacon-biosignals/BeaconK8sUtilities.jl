@@ -13,9 +13,10 @@ end
 
 function make_executable(path)
     try
+        # Uses FilePathsBase so we can do "+x"
         chmod(Path(path), "+x")
     catch e
-        @error "Could not `chmod +x $path" exception = e
+        @error "Could not run `chmod +x $path`. Try running this manually." exception = e
     end
     return nothing
 end
