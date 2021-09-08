@@ -11,6 +11,36 @@ function gen_file(file, text::AbstractString)
     return write(file, text)
 end
 
+function make_executable(path)
+    try
+        chmod(Path(path), "+x")
+    catch e
+        @error "Could not `chmod +x $path" exception = e
+    end
+    return nothing
+end
+
+function render_dir(template_dir, destination, variables; overwrite)
+    for name in readdir(template_dir)
+        text = render(read(joinpath(template_dir, name), String), variables)
+        path = joinpath(destination, name)
+        if !overwrite && isfile(path)
+            error("$path already exists; set `overwrite=true` to overwrite existing files.")
+        end
+        @info("Writing $(path)")
+        gen_file(path, text)
+    end
+    return nothing
+end
+
+function check_not_file(destination)
+    isfile(destination) && throw(ArgumentError("""
+            Destination $destination exists and is a file.
+            Must be a directory (or nonexistent in which case a directory will be created).
+        """))
+    return nothing
+end
+
 """
     setup_tensorboard(destination::AbstractString; app::AbstractString,
                       logdir::AbstractString,
@@ -40,47 +70,15 @@ function setup_tensorboard(destination::AbstractString; app::AbstractString,
                            service_account::AbstractString=default_service_account(),
                            namespace::AbstractString=get_current_namespace(),
                            local_port::Int=6006, overwrite=false)
-    isfile(destination) && throw(ArgumentError("""
-            Destination $destination exists and is a file.
-            Must be a directory (or nonexistent in which case a directory will be created).
-        """))
-
+    check_not_file(destination)
     variables = Dict("app" => app, "logdir" => logdir, "ecr" => ecr,
                      "service_account" => service_account, "local_port" => local_port,
                      "namespace" => namespace)
-
-
     render_dir(joinpath(TEMPLATES, "tensorboard"), destination, variables; overwrite)
-
     make_executable(joinpath(destination, "tensorboard.sh"))
-
     @info tensorboard_instructions(destination)
-
     return nothing
 end
-
-function make_executable(path)
-    try
-        chmod(Path(path), "+x")
-    catch e
-        @error "Could not `chmod +x $path" exception=e
-    end
-    return nothing
-end
-
-function render_dir(template_dir, destination, variables; overwrite)
-    for name in readdir(template_dir)
-        text = render(read(joinpath(template_dir, name), String), variables)
-        path = joinpath(destination, name)
-        if !overwrite && isfile(path)
-            error("$path already exists; set `overwrite=true` to overwrite existing files.")
-        end
-        @info("Writing $(path)")
-        gen_file(path, text)
-    end
-    return nothing
-end
-
 
 function tensorboard_instructions(destination)
     return """
@@ -95,16 +93,11 @@ Note: You can edit these files freely; running `setup_tensorboard` with `overwri
 """
 end
 
-
 """
-setup_follow(destination::AbstractString; app::AbstractString,
-                      logdir::AbstractString,
-                      ecr::AbstractString = default_ecr(),
-                      service_account::AbstractString = default_service_account(),
-                      namespace::AbstractString = get_current_namespace(),
-                      local_port::Int=6006, overwrite=false)
+    setup_follow(destination::AbstractString;
+                 namespace::AbstractString=get_current_namespace(), overwrite=false)
 
-Sets up a tensorboard launch scripts in destination directory `destination`, which
+Sets up a `follow.sh` script in destination directory `destination`, which
 does not have to exist ahead of time.
 
 * `namespace`: name of the Kubernetes namespace to use. Defaults to the current active
@@ -113,20 +106,12 @@ does not have to exist ahead of time.
 
 """
 function setup_follow(destination::AbstractString;
-                      namespace::AbstractString=get_current_namespace(),
-                        overwrite=false)
-    isfile(destination) && throw(ArgumentError("""
-            Destination $destination exists and is a file.
-            Must be a directory (or nonexistent in which case a directory will be created).
-        """))
-
+                      namespace::AbstractString=get_current_namespace(), overwrite=false)
+    check_not_file(destination)
     variables = Dict("namespace" => namespace)
-
     render_dir(joinpath(TEMPLATES, "follow"), destination, variables; overwrite)
     make_executable(joinpath(destination, "follow.sh"))
-
     @info follow_instructions(destination)
-
     return nothing
 end
 

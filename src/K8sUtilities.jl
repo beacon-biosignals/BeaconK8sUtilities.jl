@@ -18,7 +18,7 @@ include("utilities.jl")
 export default_ecr, default_service_account
 include("preferences.jl")
 
-export setup_tensorboard
+export setup_tensorboard, setup_follow
 include("templates.jl")
 
 end # module

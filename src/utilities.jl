@@ -6,7 +6,7 @@ already have it.
 """
 function prefix_pod(name)
     if !startswith(name, "pod/")
-        name = "pod/"*name
+        name = "pod/" * name
     end
     return name
 end
@@ -61,8 +61,7 @@ Display a progress bar while waiting for `pod` to become `Running`.
 """
 function wait_until_pod_ready(pod; namespace=nothing, exit_on_interrupt=false)
     pod = prefix_pod(pod)
-    runner(; interrupt_msg="while waiting for $pod to start up",
-    exit_on_interrupt) do
+    runner(; interrupt_msg="while waiting for $pod to start up", exit_on_interrupt) do
         # We don't want to have to wait to the `kubectl` request to finish in order to display
         # values below the progress bar, or else it will flash annoyingly.
         # So instead we do the `last_condition` calling async from the rest.
@@ -114,9 +113,8 @@ upon `ctrl-c`. Otherwise throws an error as usual upon interruption.
 function watch_logs(pod; exit_on_interrupt=false, namespace=nothing)
     pod = prefix_pod(pod)
     ns = isnothing(namespace) ? `` : `--namespace=$namespace`
-    runner(; interrupt_msg="while following the logs of $pod",
-             exit_on_interrupt) do
-        run(`$(kubectl()) logs $ns -f $pod`)
+    runner(; interrupt_msg="while following the logs of $pod", exit_on_interrupt) do
+        return run(`$(kubectl()) logs $ns -f $pod`)
     end
     return nothing
 end
@@ -125,7 +123,6 @@ struct Interrupted <: Exception
     msg::String
 end
 Base.showerror(io::IO, e::Interrupted) = print(io, "Interrupted ", e.msg)
-
 
 function runner(f; exit_on_interrupt=false, interrupt_msg="Interrupted")
     try
