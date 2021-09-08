@@ -76,9 +76,6 @@ After calling `setup_tensorboard(destination; kwargs...)` to setup the configura
 Then running `destination/tensorboard.sh` in a shell should launch a tensorboard pod,
 or give you the option to connect to an existing one.
 
-Note:
-
-* You can edit these files freely; running `setup_tensorboard` with `overwrite=true` will replace them with the latest defaults.
-* We suggest you set your syntax highlighting for `tensorboard.sh` to `julia`, as it is a Julia script disguised as a shell script.
+Note: You can edit these files freely; running `setup_tensorboard` with `overwrite=true` will replace them with the latest defaults.
 """
 end
