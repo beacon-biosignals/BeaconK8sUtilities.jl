@@ -1,0 +1,24 @@
+# This is to launch a pod to run tensorboard
+# See `tensorboard.sh`
+apiVersion: v1
+kind: Pod
+metadata:
+  generateName: {{{ app }}}-tensorboard-
+  labels:
+    target: "tensorboard"
+    app: "{{{ app }}}"
+spec:
+  serviceAccountName: {{{ service_account }}}
+  restartPolicy: "Never"
+  containers:
+  - name: tensorboard
+    command: ["tensorboard", "--logdir=${LOGDIR}", "--samples_per_plugin=images=999999,text=999999", "--max_reload_threads=4",  "serve"]
+    image: "${IMAGE_NAME}"
+    imagePullPolicy: "Always"
+    resources:
+      limits:
+        memory: "8Gi"
+        cpu: "4"
+      requests:
+        memory: "8Gi"
+        cpu: "4"
