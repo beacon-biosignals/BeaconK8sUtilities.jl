@@ -65,6 +65,13 @@ does not have to exist ahead of time.
 * `local_port`: local port to use when port forwarding.
 * `overwrite`: whether or not to overwrite existing configuration scripts.
 
+Creates:
+
+* `\$destination/tensorboard.sh`: shell script that either connects to an existing tensorboard pod or builds and launches a new tensorboard pod.
+* `\$destination/tensorboard.dockerfile`: dockerfile to build tensorboard with access to s3 log directories (used by `tensorboard.sh`)
+* `\$destination/tensorboard.yaml`: pod spec used to launch pods ((used by `tensorboard.sh`)
+
+These are pre-populated using the keyword arguments passed here.
 """
 function setup_tensorboard(destination::AbstractString; app::AbstractString,
                            logdir::AbstractString, ecr::AbstractString=default_ecr(),
@@ -105,6 +112,9 @@ does not have to exist ahead of time.
   one introspected by [`get_current_namespace`](@ref).
 * `overwrite`: whether or not to overwrite existing configuration scripts.
 
+Creates:
+
+* `\$destination/follow.sh`: shell script to wait for a pod to be ready (with progress information) and then follow its logs.
 """
 function setup_follow(destination::AbstractString;
                       namespace::AbstractString=get_current_namespace(), overwrite=false)
