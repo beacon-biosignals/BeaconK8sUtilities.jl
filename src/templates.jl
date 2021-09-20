@@ -92,7 +92,7 @@ function tensorboard_instructions(destination)
     return """
 Tensorboard has been configured in $destination.
 
-Make sure to add `K8sUtilities` to your global Julia environment so that it can be used from the `tensorboard.sh` script.
+Make sure to add `BeaconK8sUtilities` to your global Julia environment so that it can be used from the `tensorboard.sh` script.
 
 Then running `$destination/tensorboard.sh` in a shell should launch a tensorboard pod,
 or give you the option to connect to an existing one.
@@ -130,7 +130,7 @@ function follow_instructions(destination)
     return """
 `follow.sh` has been configured in $destination.
 
-Make sure to add `K8sUtilities` to your global Julia environment so that it can be used from the `follow.sh` script.
+Make sure to add `BeaconK8sUtilities` to your global Julia environment so that it can be used from the `follow.sh` script.
 
 Then running `$destination/follow.sh pod_name` should let you follow the progress of a pod.
 

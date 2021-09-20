@@ -10,7 +10,7 @@
 exec julia --color=yes --startup-file=no -q --compile=min -O0 "${BASH_SOURCE[0]}" "$@"
 =#
 
-using K8sUtilities
+using BeaconK8sUtilities
 
 pod = ARGS[1]
 

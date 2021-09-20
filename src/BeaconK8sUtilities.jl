@@ -1,4 +1,4 @@
-module K8sUtilities
+module BeaconK8sUtilities
 
 using ProgressMeter, JSON3, kubectl_jll
 using Preferences

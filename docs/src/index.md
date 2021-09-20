@@ -1,10 +1,10 @@
 ```@meta
-CurrentModule = K8sUtilities
+CurrentModule = BeaconK8sUtilities
 ```
 
-# K8sUtilities
+# BeaconK8sUtilities
 
-Documentation for [K8sUtilities](https://github.com/beacon-biosignals/K8sUtilities.jl).
+Documentation for [BeaconK8sUtilities](https://github.com/beacon-biosignals/BeaconK8sUtilities.jl).
 
 ```@index
 ```
