@@ -11,6 +11,8 @@ BeaconK8sUtilities currently provides two types of functionality:
 * [templates](https://beacon-biosignals.github.io/BeaconK8sUtilities.jl/dev/templates/): templates to set up shell scripts and YAML files
   to perform tasks, launch pods, etc.
 
+This utilities are intended to be general-purpose, but they are probably fairly specific to Beacon's kubernetes setup currently. For that reason, BeaconK8sUtilities is only registered in Beacon's private package registry at this point.
+
 ## Utility example
 
 ```julia
