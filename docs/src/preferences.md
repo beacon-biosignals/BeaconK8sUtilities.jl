@@ -1,13 +1,13 @@
 ```@meta
-CurrentModule = K8sUtilities
+CurrentModule = BeaconK8sUtilities
 ```
 
 ## Preferences
 
-K8sUtilities uses [Preferences.jl](https://github.com/JuliaPackaging/Preferences.jl) to allow persisting preferences between sessions.
+BeaconK8sUtilities uses [Preferences.jl](https://github.com/JuliaPackaging/Preferences.jl) to allow persisting preferences between sessions.
 
 ```@autodocs
-Modules = [K8sUtilities]
+Modules = [BeaconK8sUtilities]
 Pages = ["preferences.jl"]
 Private = false
 ```

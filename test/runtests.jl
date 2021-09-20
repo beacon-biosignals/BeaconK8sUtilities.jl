@@ -1,7 +1,7 @@
-using K8sUtilities
+using BeaconK8sUtilities
 using Test
 
-@testset "K8sUtilities.jl" begin
+@testset "BeaconK8sUtilities.jl" begin
     @testset "setup_tensorboard" begin
         testdir = mktempdir()
         test_args = (; app="test-app", logdir="test-logdir", ecr="test-ecr",

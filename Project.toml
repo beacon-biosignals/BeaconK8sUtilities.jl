@@ -1,4 +1,4 @@
-name = "K8sUtilities"
+name = "BeaconK8sUtilities"
 uuid = "648fc1c5-a67a-4ffa-9999-af3b96bb6918"
 authors = ["Beacon Biosignals Inc."]
 version = "0.1.0"

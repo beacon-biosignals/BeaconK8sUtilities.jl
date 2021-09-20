@@ -1,20 +1,22 @@
-# K8sUtilities
+# BeaconK8sUtilities
 
-<!-- [![Stable](https://img.shields.io/badge/docs-stable-blue.svg)](https://beacon-biosignals.github.io/K8sUtilities.jl/stable) -->
-[![Dev](https://img.shields.io/badge/docs-dev-blue.svg)](https://beacon-biosignals.github.io/K8sUtilities.jl/dev)
-[![Build Status](https://github.com/beacon-biosignals/K8sUtilities.jl/workflows/CI/badge.svg)](https://github.com/beacon-biosignals/K8sUtilities.jl/actions)
+[![Stable](https://img.shields.io/badge/docs-stable-blue.svg)](https://beacon-biosignals.github.io/BeaconK8sUtilities.jl/stable)
+[![Dev](https://img.shields.io/badge/docs-dev-blue.svg)](https://beacon-biosignals.github.io/BeaconK8sUtilities.jl/dev)
+[![Build Status](https://github.com/beacon-biosignals/BeaconK8sUtilities.jl/workflows/CI/badge.svg)](https://github.com/beacon-biosignals/BeaconK8sUtilities.jl/actions)
 
-K8sUtilities currently provides two types of functionality:
+BeaconK8sUtilities currently provides two types of functionality:
 
-* [utilities](https://beacon-biosignals.github.io/K8sUtilities.jl/dev/utilities/): simple Julia functions to call `kubectl`
-  (provided by `kubectl_jll`) and parse the results, e.g. [`get_status(pod)`](https://beacon-biosignals.github.io/K8sUtilities.jl/dev/utilities/#K8sUtilities.get_status-Tuple{Any}).
-* [templates](https://beacon-biosignals.github.io/K8sUtilities.jl/dev/templates/): templates to set up shell scripts and YAML files
+* [utilities](https://beacon-biosignals.github.io/BeaconK8sUtilities.jl/dev/utilities/): simple Julia functions to call `kubectl`
+  (provided by `kubectl_jll`) and parse the results, e.g. [`get_status(pod)`](https://beacon-biosignals.github.io/BeaconK8sUtilities.jl/dev/utilities/#BeaconK8sUtilities.get_status-Tuple{Any}).
+* [templates](https://beacon-biosignals.github.io/BeaconK8sUtilities.jl/dev/templates/): templates to set up shell scripts and YAML files
   to perform tasks, launch pods, etc.
+
+This utilities are intended to be general-purpose, but they are probably fairly specific to Beacon's kubernetes setup currently. For that reason, BeaconK8sUtilities is only registered in Beacon's private package registry at this point.
 
 ## Utility example
 
 ```julia
-julia> using K8sUtilities
+julia> using BeaconK8sUtilities
 
 julia> get_pod_names()
 2-element Vector{String}:
@@ -37,7 +39,7 @@ JSON3.Object{Base.CodeUnits{UInt8, SubString{String}}, Vector{UInt64}} with 4 en
 
 We can easily setup a simple script to follow as a pod launches:
 ```julia
-julia> using K8sUtilities
+julia> using BeaconK8sUtilities
 
 julia> setup_follow("scripts")
 
@@ -52,7 +54,7 @@ except that there's progress information printed as the pod gets ready).
 This could be adapted into a whole "launch script" including building a docker image,
 pushing it to an ECR, launching a pod, and then following along.
 Such a script can be facilitated by the Julia-side utilities and preferences
-provided in K8sUtilites.jl; see the [documentation](https://beacon-biosignals.github.io/K8sUtilities.jl/dev) for more.
+provided in K8sUtilites.jl; see the [documentation](https://beacon-biosignals.github.io/BeaconK8sUtilities.jl/dev) for more.
 
-See in particular [`setup_tensorboard`](https://beacon-biosignals.github.io/K8sUtilities.jl/dev/templates/#K8sUtilities.setup_tensorboard-Tuple{AbstractString})
+See in particular [`setup_tensorboard`](https://beacon-biosignals.github.io/BeaconK8sUtilities.jl/dev/templates/#BeaconK8sUtilities.setup_tensorboard-Tuple{AbstractString})
 for a more involved example.
