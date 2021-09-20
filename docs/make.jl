@@ -1,7 +1,8 @@
 using BeaconK8sUtilities
 using Documenter
 
-DocMeta.setdocmeta!(BeaconK8sUtilities, :DocTestSetup, :(using BeaconK8sUtilities); recursive=true)
+DocMeta.setdocmeta!(BeaconK8sUtilities, :DocTestSetup, :(using BeaconK8sUtilities);
+                    recursive=true)
 
 makedocs(; modules=[BeaconK8sUtilities],
          repo="https://github.com/beacon-biosignals/BeaconK8sUtilities.jl/blob/{commit}{path}#{line}",
