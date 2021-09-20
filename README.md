@@ -3,6 +3,7 @@
 [![Stable](https://img.shields.io/badge/docs-stable-blue.svg)](https://beacon-biosignals.github.io/BeaconK8sUtilities.jl/stable)
 [![Dev](https://img.shields.io/badge/docs-dev-blue.svg)](https://beacon-biosignals.github.io/BeaconK8sUtilities.jl/dev)
 [![Build Status](https://github.com/beacon-biosignals/BeaconK8sUtilities.jl/workflows/CI/badge.svg)](https://github.com/beacon-biosignals/BeaconK8sUtilities.jl/actions)
+[![codecov](https://codecov.io/gh/beacon-biosignals/BeaconK8sUtilities.jl/branch/main/graph/badge.svg?token=WkNuejmKjD)](https://codecov.io/gh/beacon-biosignals/BeaconK8sUtilities.jl)
 
 BeaconK8sUtilities currently provides two types of functionality:
 
