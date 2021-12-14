@@ -8,11 +8,11 @@ function capture_logs(f)
 end
 
 struct TestObj1
-    f
+    f::Any
 end
 
 struct TestObj2
-    f
+    f::Any
 end
 
 BeaconK8sUtilities.jsonable(obj::TestObj1) = (; obj.f)
@@ -60,13 +60,14 @@ BeaconK8sUtilities.jsonable(obj::TestObj1) = (; obj.f)
         @test logs["msg"] == "Hi"
         @test logs["kwargs"]["x"] == Dict("a" => Dict("b" => 2))
         @test logs["kwargs"]["worker_id"] == 1
-        @test parse(DateTime, logs["kwargs"]["timestamp"], dateformat"yyyy-mm-dd HH:MM:SS") isa DateTime
+        @test parse(DateTime, logs["kwargs"]["timestamp"],
+                    dateformat"yyyy-mm-dd HH:MM:SS") isa DateTime
 
         logs = capture_logs() do
             try
                 error("no")
             catch e
-                @error "Oh no" exception=e
+                @error "Oh no" exception = e
             end
         end
         @test logs["msg"] == "Oh no"
@@ -76,15 +77,15 @@ BeaconK8sUtilities.jsonable(obj::TestObj1) = (; obj.f)
             try
                 error("no")
             catch e
-                @error "Oh no" exception=(e, catch_backtrace())
+                @error "Oh no" exception = (e, catch_backtrace())
             end
         end
         @test logs["msg"] == "Oh no"
-        
+
         @test logs["kwargs"]["exception"][1] == "ErrorException(\"no\")"
         # Make sure we get a stacktrace out:
-        @test contains(logs["kwargs"]["exception"][2], "Stacktrace:\n  [1] error(s::String)\n")
-
+        @test contains(logs["kwargs"]["exception"][2],
+                       "Stacktrace:\n  [1] error(s::String)\n")
 
         logs = capture_logs() do
             @info "Hi" x = TestObj1("a")
@@ -95,7 +96,7 @@ BeaconK8sUtilities.jsonable(obj::TestObj1) = (; obj.f)
             @info "Hi" x = TestObj2("a")
         end
         @test logs["kwargs"]["x"] == "TestObj2(\"a\")"
-        @test logs["kwargs"]["LoggingFormats.FormatError"] == "ArgumentError: TestObj2 doesn't have a defined `StructTypes.StructType`"
+        @test logs["kwargs"]["LoggingFormats.FormatError"] ==
+              "ArgumentError: TestObj2 doesn't have a defined `StructTypes.StructType`"
     end
-
 end

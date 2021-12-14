@@ -1,4 +1,7 @@
-info_for_logger() = (; timestamp=Dates.format(now(), dateformat"yyyy-mm-dd HH:MM:SS"), worker_id=myid())
+function info_for_logger()
+    return (; timestamp=Dates.format(now(), dateformat"yyyy-mm-dd HH:MM:SS"),
+            worker_id=myid())
+end
 
 """
     jsonable(obj::Any) = obj
@@ -34,7 +37,7 @@ function json_logger(level=Logging.Info; info_for_logger=info_for_logger, io=std
     t = TransformerLogger(FormatLogger(LoggingFormats.JSON(; recursive=true), io)) do log
         kwarg_nt = (; (k => handle_log_exception(k, v) for (k, v) in log.kwargs)...)
         transformed_kwargs = map(jsonable, kwarg_nt)
-        return merge(log, (; kwargs = merge(info_for_logger(), transformed_kwargs)))
+        return merge(log, (; kwargs=merge(info_for_logger(), transformed_kwargs)))
     end
     return MinLevelLogger(t, level)
 end
