@@ -74,13 +74,13 @@ BeaconK8sUtilities.jsonable(obj::TestObj1) = (; obj.f)
         @test logs["kwargs"]["x"] == "TestObj2(\"a\")"
         @test logs["kwargs"]["LoggingFormats.FormatError"] ==
               "ArgumentError: TestObj2 doesn't have a defined `StructTypes.StructType`"
-        
+
         # test `maxlog`
-        f() = @info "hi" maxlog=1
+        f() = @info "hi" maxlog = 1
         io = IOBuffer()
         Logging.with_logger(json_logger(; io)) do
             f()
-            f()
+            return f()
         end
         logs = String(take!(io))
         lines = split(logs, '\n')

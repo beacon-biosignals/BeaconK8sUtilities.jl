@@ -12,16 +12,16 @@ serialize types that themselves do not already have a `StructTypes.StructType` d
 jsonable(obj::Any) = obj
 
 function maxlog_logger(logger)
-    counts = Dict{Symbol, Int}()
+    counts = Dict{Symbol,Int}()
     return ActiveFilteredLogger(logger) do log
         haskey(log.kwargs, :maxlog) || return true
         if !haskey(counts, log.id) || (counts[log.id] < log.kwargs[:maxlog])
-             # then we will log it, and update the corresponding count
-             counts[log.id] = get(counts, log.id, 0) + 1
-             return true
-         else
-             return false
-         end
+            # then we will log it, and update the corresponding count
+            counts[log.id] = get(counts, log.id, 0) + 1
+            return true
+        else
+            return false
+        end
     end
 end
 
