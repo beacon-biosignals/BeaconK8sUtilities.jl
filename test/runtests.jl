@@ -64,30 +64,6 @@ BeaconK8sUtilities.jsonable(obj::TestObj1) = (; obj.f)
                     dateformat"yyyy-mm-dd HH:MM:SS") isa DateTime
 
         logs = capture_logs() do
-            try
-                error("no")
-            catch e
-                @error "Oh no" exception = e
-            end
-        end
-        @test logs["msg"] == "Oh no"
-        @test logs["kwargs"]["exception"] == "ErrorException(\"no\")"
-
-        logs = capture_logs() do
-            try
-                error("no")
-            catch e
-                @error "Oh no" exception = (e, catch_backtrace())
-            end
-        end
-        @test logs["msg"] == "Oh no"
-
-        @test logs["kwargs"]["exception"][1] == "ErrorException(\"no\")"
-        # Make sure we get a stacktrace out:
-        @test contains(logs["kwargs"]["exception"][2],
-                       "Stacktrace:\n  [1] error(s::String)\n")
-
-        logs = capture_logs() do
             @info "Hi" x = TestObj1("a")
         end
         @test logs["kwargs"]["x"] == Dict("f" => "a")
@@ -98,5 +74,18 @@ BeaconK8sUtilities.jsonable(obj::TestObj1) = (; obj.f)
         @test logs["kwargs"]["x"] == "TestObj2(\"a\")"
         @test logs["kwargs"]["LoggingFormats.FormatError"] ==
               "ArgumentError: TestObj2 doesn't have a defined `StructTypes.StructType`"
+        
+        # test `maxlog`
+        f() = @info "hi" maxlog=1
+        io = IOBuffer()
+        Logging.with_logger(json_logger(; io)) do
+            f()
+            f()
+        end
+        logs = String(take!(io))
+        lines = split(logs, '\n')
+        @test length(lines) == 2
+        @test lines[2] == ""
+        @test JSON3.read(lines[1])["msg"] == "hi"
     end
 end

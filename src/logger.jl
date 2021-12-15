@@ -11,14 +11,18 @@ serialize types that themselves do not already have a `StructTypes.StructType` d
 """
 jsonable(obj::Any) = obj
 
-function handle_log_exception(key, v)
-    key == :exception || return v
-    if v isa Tuple && length(v) == 2
-        e, bt = v
-        msg = sprint(showerror, e, stacktrace(bt))
-        return (string(e), msg)
+function maxlog_logger(logger)
+    counts = Dict{Symbol, Int}()
+    return ActiveFilteredLogger(logger) do log
+        haskey(log.kwargs, :maxlog) || return true
+        if !haskey(counts, log.id) || (counts[log.id] < log.kwargs[:maxlog])
+             # then we will log it, and update the corresponding count
+             counts[log.id] = get(counts, log.id, 0) + 1
+             return true
+         else
+             return false
+         end
     end
-    return string(v)
 end
 
 """
@@ -35,9 +39,8 @@ Set the positional argument to the minimum-enabled logging level, and `io` to th
 """
 function json_logger(level=Logging.Info; info_for_logger=info_for_logger, io=stderr)
     t = TransformerLogger(FormatLogger(LoggingFormats.JSON(; recursive=true), io)) do log
-        kwarg_nt = (; (k => handle_log_exception(k, v) for (k, v) in log.kwargs)...)
-        transformed_kwargs = map(jsonable, kwarg_nt)
+        transformed_kwargs = map(jsonable, NamedTuple(log.kwargs))
         return merge(log, (; kwargs=merge(info_for_logger(), transformed_kwargs)))
     end
-    return MinLevelLogger(t, level)
+    return MinLevelLogger(maxlog_logger(t), level)
 end
