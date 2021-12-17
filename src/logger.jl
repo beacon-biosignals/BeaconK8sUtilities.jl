@@ -25,13 +25,16 @@ it is better than pirating `StructTypes.StructType` which could be used more wid
 """
 jsonable(obj::Any) = obj
 
-function maxlog_logger(logger)
-    counts = Dict{Symbol,Int}()
+# https://github.com/JuliaLogging/LoggingExtras.jl/pull/59/
+function make_maxlog_logger(logger)
+    counts = Dict{Any,Int}()
     return ActiveFilteredLogger(logger) do log
-        haskey(log.kwargs, :maxlog) || return true
-        if !haskey(counts, log.id) || (counts[log.id] < log.kwargs[:maxlog])
-            # then we will log it, and update the corresponding count
-            counts[log.id] = get(counts, log.id, 0) + 1
+        maxlog = get(log.kwargs, :maxlog, nothing)
+        maxlog === nothing && return true # no limit
+        c = get(counts, log.id, 0)
+        if c < maxlog
+            # log this message and update the count
+            counts[log.id] = c + 1
             return true
         else
             return false
@@ -58,5 +61,5 @@ function json_logger(level=Logging.Info; info_for_logger=info_for_logger, io=std
         transformed_kwargs = map(jsonable, NamedTuple(log.kwargs))
         return merge(log, (; kwargs=merge(info_for_logger(), transformed_kwargs)))
     end
-    return MinLevelLogger(maxlog_logger(t), level)
+    return MinLevelLogger(make_maxlog_logger(t), level)
 end
