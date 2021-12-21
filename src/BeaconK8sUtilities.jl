@@ -6,6 +6,10 @@ using Mustache
 using RelocatableFolders
 using Compat
 using FilePathsBase
+using LoggingExtras
+using LoggingFormats
+using Logging, Dates
+using Distributed # for `myid`
 
 const TEMPLATES = @path joinpath(@__DIR__, "..", "templates")
 
@@ -20,5 +24,8 @@ include("preferences.jl")
 
 export setup_tensorboard, setup_follow
 include("templates.jl")
+
+export json_logger
+include("logger.jl")
 
 end # module
